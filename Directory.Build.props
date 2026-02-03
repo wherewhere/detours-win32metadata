@@ -1,0 +1,16 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>Microsoft (packaged by Sebastian Solnica)</Authors>
+    <LangVersion>latest</LangVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/lowleveldesign/detours-win32metadata</PackageProjectUrl>
+    <PackageTags>Win32;Metadata;Detours</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/microsoft/detours</RepositoryUrl>
+    <Title>Detours Library Win32 Metadata</Title>
+    <VersionPrefix>4.0.1</VersionPrefix>
+    <Description>This packages provides the Win32 API surface of the Detours library as a winmd (Windows metadata) file. It is intended to be used as the basis for generating language-specific projections. It is not loadable as a CLR assembly.</Description>
+  </PropertyGroup>
+
+</Project>

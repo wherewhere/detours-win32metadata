@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.Build.NoTargets" DefaultTargets="Pack">
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU5100;NU5128</NoWarn>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageVersion>4.0.1</PackageVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Detours.Win32Metadata</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Detours.Win32Metadata.msbuildproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup Label="Package">
+    <None Include="..\README.md" PackagePath="\README.md" Pack="true" />
+    <None Include="Properties\*.*" PackagePath="build\;buildTransitive\" Pack="true" />
+    <None Include="Properties\native\*.*" PackagePath="build\native\;buildTransitive\native\" Pack="true" />
+    <None Include="..\src\bin\*.winmd" PackagePath="\" Pack="true" />
+    <None Include="..\src\bin\*.msgpack" PackagePath="\" Pack="true" />
+    <None Include="..\detours\src\detours.h" PackagePath="detours.h" Pack="true" />
+    <None Include="..\detours\lib.X64\detours.lib" PackagePath="static\win-x64\native\detours.lib" Link="static\win-x64\native\detours.lib" Pack="true" />
+    <None Include="..\detours\lib.X64\detours.pdb" PackagePath="static\win-x64\native\detours.pdb" Link="static\win-x64\native\detours.pdb" Pack="true" />
+    <None Include="..\detours-dll\bin.X64\detours.dll" PackagePath="runtimes\win-x64\native\detours.dll" Link="runtimes\win-x64\native\detours.dll" Pack="true" />
+    <None Include="..\detours-dll\bin.X64\detours.pdb" PackagePath="runtimes\win-x64\native\detours.pdb" Link="runtimes\win-x64\native\detours.pdb" Pack="true" />
+    <None Include="..\detours\lib.X86\detours.lib" PackagePath="static\win-x86\native\detours.lib" Link="static\win-x86\native\detours.lib" Pack="true" />
+    <None Include="..\detours\lib.X86\detours.pdb" PackagePath="static\win-x86\native\detours.pdb" Link="static\win-x86\native\detours.pdb" Pack="true" />
+    <None Include="..\detours-dll\bin.X86\detours.dll" PackagePath="runtimes\win-x86\native\detours.dll" Link="runtimes\win-x86\native\detours.dll" Pack="true" />
+    <None Include="..\detours-dll\bin.X86\detours.pdb" PackagePath="runtimes\win-x86\native\detours.pdb" Link="runtimes\win-x86\native\detours.pdb" Pack="true" />
+    <None Include="..\detours\lib.ARM\detours.lib" PackagePath="static\win-arm\native\detours.lib" Link="static\win-arm\native\detours.lib" Pack="true" />
+    <None Include="..\detours\lib.ARM\detours.pdb" PackagePath="static\win-arm\native\detours.pdb" Link="static\win-arm\native\detours.pdb" Pack="true" />
+    <None Include="..\detours-dll\bin.ARM\detours.dll" PackagePath="runtimes\win-arm\native\detours.dll" Link="runtimes\win-arm\native\detours.dll" Pack="true" />
+    <None Include="..\detours-dll\bin.ARM\detours.pdb" PackagePath="runtimes\win-arm\native\detours.pdb" Link="runtimes\win-arm\native\detours.pdb" Pack="true" />
+    <None Include="..\detours\lib.ARM64\detours.lib" PackagePath="static\win-arm64\native\detours.lib" Link="static\win-arm64\native\detours.lib" Pack="true" />
+    <None Include="..\detours\lib.ARM64\detours.pdb" PackagePath="static\win-arm64\native\detours.pdb" Link="static\win-arm64\native\detours.pdb" Pack="true" />
+    <None Include="..\detours-dll\bin.ARM64\detours.dll" PackagePath="runtimes\win-arm64\native\detours.dll" Link="runtimes\win-arm64\native\detours.dll" Pack="true" />
+    <None Include="..\detours-dll\bin.ARM64\detours.pdb" PackagePath="runtimes\win-arm64\native\detours.pdb" Link="runtimes\win-arm64\native\detours.pdb" Pack="true" />
+  </ItemGroup>
+</Project>

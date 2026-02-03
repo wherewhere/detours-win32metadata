@@ -85,16 +85,13 @@ jobs:
 
       - uses: actions/setup-dotnet@main
         with:
-          dotnet-version: 8.0.x
-      - name: Apply detours.h patch
-        shell: pwsh
-        run: "@(Get-Content \".\\detours\\src\\detours.h\")[0..866+920..1234] | Set-Content \".\\src\\detours.h\""
+          dotnet-version: 10.0.x
 
       - name: Build detours metadata
         working-directory: src
-        run: dotnet build -c Release -p:GeneratePackageOnBuild=true
+        run: dotnet build -c Release
 
       - uses: actions/upload-artifact@main
         with:
           name: Detours.winmd
-          path: src/winmd/Detours.winmd
+          path: src/bin/Detours.winmd
