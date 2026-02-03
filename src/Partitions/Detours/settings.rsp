@@ -1,0 +1,4 @@
+--traverse
+<IncludeRoot>/detours.h
+--namespace
+Microsoft.Detours
