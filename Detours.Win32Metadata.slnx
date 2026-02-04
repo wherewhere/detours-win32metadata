@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="document/Detours.Win32Metadata.Document.csproj" />
   <Project Path="package/Detours.Win32Metadata.Package.msbuildproj" Type="13b669be-bb05-4ddf-9536-439f39a36129" />
   <Project Path="src/Detours.Win32Metadata.msbuildproj" Type="13b669be-bb05-4ddf-9536-439f39a36129" />
 </Solution>

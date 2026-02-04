@@ -2,3 +2,6 @@
 	path = detours
 	url = https://github.com/microsoft/Detours.git
 	shallow = true
+[submodule "detours-wiki"]
+	path = detours-wiki
+	url = https://github.com/microsoft/Detours.wiki.git

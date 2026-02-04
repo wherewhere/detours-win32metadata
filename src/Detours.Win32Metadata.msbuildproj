@@ -13,6 +13,10 @@
     <ShowEmitWinmdOutputDetails>true</ShowEmitWinmdOutputDetails>
     <ExcludeFromCrossarch>Detours</ExcludeFromCrossarch>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\document\Detours.Win32Metadata.Document.csproj" ReferenceOutputAssembly="false" OutputItemType="ScraperTool" SetTargetFramework="TargetFramework=net10.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ManualCs Include="Manual\*.cs" />
@@ -34,4 +38,21 @@
     <None Include="**/*.txt" Exclude="bin/**/*;obj/**/*" />
     <None Include="**/*.json" Exclude="bin/**/*;obj/**/*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <DocOutputPath Include="bin\apidocs.msgpack" />
+    <DocRspPath Include="obj\documentationMappings.rsp" />
+    <ResponseFile Include="@(DocRspPath)" />
+  </ItemGroup>
+
+  <Target Name="GenerateAndConsumeDocs"
+          DependsOnTargets="ResolveProjectReferences"
+          BeforeTargets="FilterRsps"
+          Inputs="@(ScraperTool)"
+          Outputs="@(DocOutputPath);@(DocRspPath)"
+          Condition="'$(DesignTimeBuild)'!='true'">
+    <Message Importance="high" Text="Generating @(DocOutputPath->'%(FullPath)'). This may take a few minutes..." />
+    <Exec Command="dotnet @(ScraperTool) ../detours-wiki/ @(DocOutputPath) @(DocRspPath) ../detours-dll/detours.def"
+          StandardOutputImportance="high"/>
+  </Target>
 </Project>
