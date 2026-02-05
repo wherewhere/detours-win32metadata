@@ -1,12 +1,14 @@
 ﻿//#define Test
 
+using Detours.Win32Metadata.Document.Renderers;
 using Markdig;
+using Markdig.Extensions.EmphasisExtras;
+using Markdig.Parsers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using MessagePack;
 using Microsoft.Windows.SDK.Win32Docs;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text;
 
@@ -45,6 +47,12 @@ try
     ConcurrentDictionary<string, ApiDetails> results = new();
     Dictionary<string, string> lists = Directory.EnumerateFiles(contentBasePath, "*.md").ToDictionary((Func<string, string>)Path.GetFileNameWithoutExtension!);
 
+    MarkdownPipelineBuilder pipelineBuilder = new MarkdownPipelineBuilder()
+        .UseAutoLinks()
+        .UseEmphasisExtras(EmphasisExtraOptions.Inserted);
+    _ = pipelineBuilder.BlockParsers.RemoveAll(x => x is HtmlBlockParser or QuoteBlockParser or ThematicBreakParser);
+    MarkdownPipeline pipeline = pipelineBuilder.Build();
+
     bool isExports = false;
     const string baseUrl = "https://github.com/microsoft/Detours/wiki/";
     await foreach (string line in File.ReadLinesAsync(defPath, cts.Token).ConfigureAwait(false))
@@ -57,15 +65,16 @@ try
             if (lists.TryGetValue(exportName, out string? docPath))
             {
                 string markdown = await File.ReadAllTextAsync(docPath, cts.Token).ConfigureAwait(false);
-                MarkdownDocument document = Markdown.Parse(markdown);
+                MarkdownDocument document = Markdown.Parse(markdown, pipeline);
                 ApiDetails details = new() { HelpLink = new Uri($"{baseUrl}{exportName}") };
                 results[exportName] = details;
                 ApiKind kind = ApiKind.Unknown;
                 string paramName = string.Empty;
                 StringBuilder builder = new();
-                foreach (Block obj in document)
+                XmlDocRender render = new(new StringWriter(builder)) { BaseUrl = new Uri(baseUrl) };
+                foreach (Block block in document)
                 {
-                    switch (obj)
+                    switch (block)
                     {
                         case HeadingBlock { Level: 1 }:
                             kind = ApiKind.Description;
@@ -82,13 +91,18 @@ try
                                 _ => ApiKind.Unknown
                             };
                             break;
+                        case HeadingBlock headingBlock:
+                            span = headingBlock.Span;
+                            text = markdown.Substring(span.Start, span.Length);
+                            _ = builder.Append($"<para>{WebUtility.HtmlEncode(text)}</para>");
+                            break;
                         case ParagraphBlock paragraphBlock:
                             switch (kind)
                             {
                                 case ApiKind.Description:
                                 case ApiKind.Remarks:
                                 case ApiKind.ReturnValue:
-                                    _ = builder.Append($"<para>{Render(paragraphBlock.Inline?.FirstChild)}</para>");
+                                    _ = render.Render(paragraphBlock);
                                     break;
                                 case ApiKind.Parameters:
                                     if (paragraphBlock.Inline is { FirstChild: EmphasisInline { FirstChild: LiteralInline { Content: { Length: > 0 } content } } emphasisInline })
@@ -97,13 +111,28 @@ try
                                         { details.Parameters[paramName] = builder.ToString(); }
                                         builder.Clear();
                                         paramName = content.ToString();
-                                        _ = builder.Append($"<para>{Render(emphasisInline.NextSibling).TrimStart(' ', ':')}</para>");
+                                        Inline? inline = emphasisInline.NextSibling;
+                                        while (inline != null)
+                                        {
+                                            Inline? next = inline.NextSibling;
+                                            _ = render.Render(inline);
+                                            inline = next;
+                                        }
+                                        string trimmed = builder.ToString().TrimStart(' ', ':');
+                                        builder.Clear();
+                                        _ = builder.Append($"<para>{trimmed}</para>");
                                         break;
                                     }
                                     else
                                     {
                                         goto case ApiKind.Remarks;
                                     }
+                            }
+                            break;
+                        default:
+                            if (kind != ApiKind.Unknown)
+                            {
+                                render.Render(block);
                             }
                             break;
                     }
@@ -132,50 +161,6 @@ try
                             break;
                     }
                     builder.Clear();
-                }
-
-                static string Render(Inline? first)
-                {
-                    if (first == null) { return string.Empty; }
-                    StringBuilder builder = new();
-                    do
-                    {
-                        switch (first)
-                        {
-                            case LiteralInline literalInline:
-                                _ = builder.Append(WebUtility.HtmlEncode(literalInline.Content.ToString()));
-                                break;
-                            case AutolinkInline autolinkInline:
-                                string url = WebUtility.HtmlEncode(AppendUrl(autolinkInline.Url));
-                                _ = builder.Append($"<see href=\"{url}\">{url}</see>");
-                                break;
-                            case CodeInline codeInline:
-                                _ = builder.Append($"<c>{WebUtility.HtmlEncode(codeInline.Content)}</c>");
-                                break;
-                            case EmphasisInline emphasisInline:
-                                int count = emphasisInline.DelimiterCount % 4;
-                                string inline = Render(emphasisInline.FirstChild);
-                                _ = count switch
-                                {
-                                    1 => builder.Append($"<i>{inline}</i>"),
-                                    2 => builder.Append($"<b>{inline}</b>"),
-                                    3 => builder.Append($"<b><i>{inline}</i></b>"),
-                                    0 or _ => builder.Append(inline),
-                                };
-                                break;
-                            case LineBreakInline lineBreakInline:
-                                _ = builder.Append(lineBreakInline.IsHard ? "<br/>" : " ");
-                                break;
-                            case LinkInline { IsImage: false } linkInline:
-                                _ = builder.Append($"<see href=\"{WebUtility.HtmlEncode(AppendUrl(linkInline.Url))}\">{Render(linkInline.FirstChild)}</see>");
-                                break;
-                        }
-                        [return: NotNullIfNotNull(nameof(url))]
-                        static string? AppendUrl(string? url) =>
-                            string.IsNullOrWhiteSpace(url) ? url : url.Contains(":/") ? url : $"{baseUrl}{url}";
-                    }
-                    while ((first = first.NextSibling) != null);
-                    return builder.ToString();
                 }
             }
         }
