@@ -50,7 +50,7 @@ try
     MarkdownPipelineBuilder pipelineBuilder = new MarkdownPipelineBuilder()
         .UseAutoLinks()
         .UseEmphasisExtras(EmphasisExtraOptions.Inserted);
-    _ = pipelineBuilder.BlockParsers.RemoveAll(x => x is HtmlBlockParser or QuoteBlockParser or ThematicBreakParser);
+    _ = pipelineBuilder.BlockParsers.RemoveAll(x => x is QuoteBlockParser or ThematicBreakParser);
     MarkdownPipeline pipeline = pipelineBuilder.Build();
 
     bool isExports = false;

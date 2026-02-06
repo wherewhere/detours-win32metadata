@@ -15,12 +15,8 @@ namespace Detours.Win32Metadata.Document.Renderers.XmlDoc.Inlines
             {
                 _ = renderer.Write("mailto:");
             }
-            renderer.WriteEscapeUrl(obj.Url);
-            renderer.Write("\">");
-
-            renderer.WriteEscape(obj.Url);
-
-            renderer.Write("</see>");
+            renderer.WriteEscapeUrl(obj.Url)
+                .Write("\"/>");
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace Detours.Win32Metadata.Document.Renderers.XmlDoc.Inlines
 {
     /// <summary>
-    /// A HTML renderer for a <see cref="LineBreakInline"/>.
+    /// A XmlDoc renderer for a <see cref="LineBreakInline"/>.
     /// </summary>
     /// <seealso cref="XmlDocObjectRenderer{LineBreakInline}" />
     public class LineBreakInlineRenderer : XmlDocObjectRenderer<LineBreakInline>

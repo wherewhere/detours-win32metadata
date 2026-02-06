@@ -3,7 +3,7 @@
 namespace Detours.Win32Metadata.Document.Renderers.XmlDoc.Inlines
 {
     /// <summary>
-    /// A HTML renderer for a <see cref="HtmlEntityInline"/>.
+    /// A XmlDoc renderer for a <see cref="HtmlEntityInline"/>.
     /// </summary>
     /// <seealso cref="XmlDocObjectRenderer{HtmlEntityInline}" />
     public class HtmlEntityInlineRenderer : XmlDocObjectRenderer<HtmlEntityInline>

@@ -29,6 +29,7 @@ namespace Detours.Win32Metadata.Document.Renderers
             // Default block renderers
             ObjectRenderers.Add(new CodeBlockRenderer());
             ObjectRenderers.Add(new ListRenderer());
+            ObjectRenderers.Add(new HtmlBlockRenderer());
             ObjectRenderers.Add(new ParagraphRenderer());
 
             // Default inline renderers
@@ -37,6 +38,7 @@ namespace Detours.Win32Metadata.Document.Renderers
             ObjectRenderers.Add(new DelimiterInlineRenderer());
             ObjectRenderers.Add(new EmphasisInlineRenderer());
             ObjectRenderers.Add(new LineBreakInlineRenderer());
+            ObjectRenderers.Add(new HtmlInlineRenderer());
             ObjectRenderers.Add(new HtmlEntityInlineRenderer());
             ObjectRenderers.Add(new LinkInlineRenderer());
             ObjectRenderers.Add(new LiteralInlineRenderer());
