@@ -21,7 +21,7 @@
     <None Include="Properties\native\*.*" PackagePath="build\native\;buildTransitive\native\" Pack="true" />
     <None Include="..\src\bin\*.winmd" PackagePath="\" Pack="true" />
     <None Include="..\src\bin\*.msgpack" PackagePath="\" Pack="true" />
-    <None Include="..\detours\src\detours.h" PackagePath="detours.h" Pack="true" />
+    <None Include="..\detours\src\detours.h" PackagePath="include\detours.h" Pack="true" />
     <None Include="..\detours\lib.X64\detours.lib" PackagePath="static\win-x64\native\detours.lib" Link="static\win-x64\native\detours.lib" Pack="true" />
     <None Include="..\detours\lib.X64\detours.pdb" PackagePath="static\win-x64\native\detours.pdb" Link="static\win-x64\native\detours.pdb" Pack="true" />
     <None Include="..\detours-dll\bin.X64\detours.dll" PackagePath="runtimes\win-x64\native\detours.dll" Link="runtimes\win-x64\native\detours.dll" Pack="true" />
